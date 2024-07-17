@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -9,14 +9,14 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
-  Button,
+  Platform,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Colors} from '../../constants/Colors'; 
+import { Colors } from '../../constants/Colors';
 import { FONTS } from '../../constants/Fonts';
 import CustomText from '../../components/global/CustomText';
 
@@ -24,7 +24,7 @@ const backgroundImage = require('../../assets/image/themebg.png');
 const job = require('../../assets/image/job-posting.png');
 const flag = require('../../assets/image/india.png');
 
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen({ navigation}: any ) {
   const [isFocused, setIsFocused] = useState(false);
   return (
     <SafeAreaView style={styles.container}>
@@ -34,7 +34,6 @@ export default function LoginScreen({ navigation }) {
         <View style={styles.containerSection}>
           <View style={styles.wrapperImage}>
             <Image
-              style={styles.jobPostingIcon}
               resizeMode="cover"
               source={job}
             />
@@ -50,7 +49,7 @@ export default function LoginScreen({ navigation }) {
           <View style={styles.groupParent}>
             <View style={styles.groupContainer}>
               <View style={styles.containerFlag}>
-                <Image source={flag} style={styles.flag} />
+                <Image source={flag}  />
               </View>
               <View>
                 <TextInput
@@ -67,17 +66,21 @@ export default function LoginScreen({ navigation }) {
                 />
               </View>
             </View>
-            <TouchableOpacity style={styles.button} activeOpacity={0.8}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => navigation.navigate('otpScreen')}
+              activeOpacity={0.8}
+            >
               <Text style={styles.buttonText}>Continue</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> 
             <View style={styles.ContainerlineOr}>
               <View style={styles.line1} />
               <Text style={styles.or}>OR</Text>
               <View style={styles.line2} />
             </View>
             <View style={styles.buttonWapper}>
-              <TouchableOpacity style={styles.buttonEmail}  activeOpacity={0.8}
-              onPress={() => navigation.navigate('EmailLoginScreen')}>
+              <TouchableOpacity style={styles.buttonEmail} activeOpacity={0.8}
+                onPress={() => navigation.navigate('EmailLoginScreen')}>
                 <Text>Login with email</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.buttonEmail} activeOpacity={0.8}>
@@ -106,17 +109,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     ...Platform.select({
       ios: {
-        top: 0,  
+        top: 0,
       },
       android: {
-        top: 0,  
+        top: -40,
       },
     }),
   },
   containerSection: {
     flex: 1,
     alignItems: 'center',
-    paddingHorizontal: 28,
+    marginHorizontal: 28,
   },
   wrapperImage: {
     paddingTop: 120,
@@ -131,7 +134,7 @@ const styles = StyleSheet.create({
     color: Colors.Regular,
     textAlign: 'center',
   },
-  getQualityApplies: {  
+  getQualityApplies: {
     textAlign: 'center',
     marginTop: 10,
   },
@@ -194,7 +197,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   line1: {
-    width: wp('40%'),
+    width: wp('42%'),
     borderStyle: 'solid',
     borderColor: '#c5c7ca',
     borderTopWidth: 1,
@@ -209,7 +212,7 @@ const styles = StyleSheet.create({
     width: 17,
   },
   line2: {
-    width: wp('40%'),
+    width: wp('42%'),
     borderStyle: 'solid',
     borderColor: Colors.grey,
     borderTopWidth: 1,
@@ -226,11 +229,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 32,
     paddingVertical: 13,
-    width:'50%',
-    color:Colors.Regular
+    width: '49%',
+    color: Colors.Regular
   },
-  buttonWapper:{
-    flexDirection:'row',
-    gap: 10
+  buttonWapper: {
+    flexDirection: 'row',
+    gap: 10,
   }
 });
