@@ -92,7 +92,7 @@ export default function OtpScreen({navigation}:any) {
                 </View>
                 <View>
                     <View style={styles.resendWapper}>
-                        <CustomText style={styles.Resend} variant="small">
+                        <CustomText variant="small">
                             Resend code in
                         </CustomText>
                         <CustomText style={styles.timer} variant="small">
@@ -100,7 +100,7 @@ export default function OtpScreen({navigation}:any) {
                             {timer}s
                         </CustomText>
                     </View>
-                    <TouchableOpacity style={styles.button} activeOpacity={0.8}>
+                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Main")}  activeOpacity={0.8}>
                         <CustomText>Verify</CustomText>
                     </TouchableOpacity>
                 </View>

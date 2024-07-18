@@ -39,7 +39,7 @@ export default function LoginScreen({ navigation}: any ) {
             />
           </View>
           <Text style={styles.quickEasy}>Quick & Easy Job Posting</Text>
-          <CustomText variant='small' fontFamily={FONTS.Bold} style={styles.getQualityApplies}>
+          <CustomText variant='small'  style={styles.getQualityApplies}>
             Get Quality Applies. No Middlemen. No commission, get your job done
             and pay them straight.
           </CustomText>

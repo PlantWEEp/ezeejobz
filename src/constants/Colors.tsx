@@ -8,5 +8,8 @@ export enum Colors  {
   grey = '#C5C7CA',
   green = '#27D045', 
   danger = '#D02727',
-  text = "text", 
+  text = "text",
+  Active = "Active",
+  Inactive = "Inactive",
+  Active = "Active", 
 };

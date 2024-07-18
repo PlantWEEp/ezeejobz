@@ -9,7 +9,6 @@ import {
 } from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CustomText from '../../components/global/CustomText';
-import { FONTS } from '../../constants/Fonts';
 
 const EmailLoginScreen = () => {
   const navigation = useNavigation();
@@ -32,7 +31,7 @@ const EmailLoginScreen = () => {
           <Icon name="chevron-back" size={24} color="#000" />
         </TouchableOpacity>
         <View style={styles.Welcome}>
-          <CustomText variant='h2' fontFamily={FONTS.Bold}>Welcome back!</CustomText>
+          <CustomText variant='h2'>Welcome back!</CustomText>
           <CustomText variant='small_X' style={styles.subtile}>efficitur non finibus eu, convallis iaculis ex.efficitur non finibus eu, convallis iaculis ex. efficitur non finibus eu, convallis iaculis ex.</CustomText>
         </View>
         <View style={styles.loginForm}>
