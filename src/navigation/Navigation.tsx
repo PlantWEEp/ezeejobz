@@ -11,7 +11,7 @@ function AuthStack() {
     return (
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="EmailLogin" component={EmailLoginScreen} />
+        <Stack.Screen name="EmailLoginScreen" component={EmailLoginScreen} />
         <Stack.Screen name="otpScreen" component={OtpScreen} />
       </Stack.Navigator>
     );

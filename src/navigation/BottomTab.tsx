@@ -23,7 +23,8 @@ function BottomTabs() {
           left: 20,
           ...styles.shadow, 
           borderRadius: 999,
-          height:60
+          height:60,
+          paddingRight:10
         },
       }}>
       <Tab.Screen 

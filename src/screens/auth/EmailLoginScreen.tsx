@@ -42,7 +42,7 @@ const EmailLoginScreen = () => {
               placeholder='Enter your email address'
             />
             <CustomText variant='small' style={styles.label}>Password</CustomText>
-            <View style={styles.password}>
+            <View >
               <TextInput
                 style={styles.TextInputPassword}
                 placeholder='Enter password'
