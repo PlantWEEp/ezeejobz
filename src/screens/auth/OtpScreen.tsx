@@ -100,7 +100,7 @@ export default function OtpScreen({navigation}:any) {
                             {timer}s
                         </CustomText>
                     </View>
-                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Main")}  activeOpacity={0.8}>
+                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Root")}  activeOpacity={0.8}>
                         <CustomText>Verify</CustomText>
                     </TouchableOpacity>
                 </View>

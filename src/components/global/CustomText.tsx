@@ -100,6 +100,9 @@ import {
     mention: {
       textAlign: 'left',
     },
+    h3:{
+      fontWeight:'bold'
+    }
   });
   
   export default CustomText;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StatusBar, StyleSheet, Image, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../../constants/Colors';
@@ -9,19 +9,49 @@ import {
 } from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CustomText from '../../components/global/CustomText';
+import axios from 'axios';
+import { BASE_URL } from '../../utils/config';
+import useAuthStore from '../../store/Store';
+//import * as Yup from 'yup';
 
-const EmailLoginScreen = () => {
+interface Credentials {
+  email: string
+  password: string
+} 
+
+const EmailLoginScreen: React.FC = () => {
   const navigation = useNavigation();
+
+  const [secure, setSecure] = useState(true)
+  const [userCredentials, setUserCredentials] = useState<Credentials>({
+    email: '',
+    password: ''
+  })
 
   const handleBackPress = () => {
     navigation.goBack();
   };
 
-  const [secure,setSecure] = useState(true)
-
   const toggleSecureText = () => {
     setSecure(!secure);
   };
+
+  const setToken = useAuthStore((state) => state.setToken);
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post(`${BASE_URL}/api/auth/login`, userCredentials)
+      if (response.status === 200) {
+        console.log('Login successful:', response.data);
+        const userToken = response.data
+        setToken(userToken)
+        navigation.navigate('Root', { screen: 'Home', initial: false });
+      } else {
+        console.log('Unexpected response:', response);
+      }
+    } catch (error) {
+      console.log('Unexpected response error:', error);
+    }
+  }
 
   return (
     <SafeAreaView style={styles.EmailLoginScreen}>
@@ -38,21 +68,33 @@ const EmailLoginScreen = () => {
           <View>
             <CustomText variant='small' style={styles.label}>Email address</CustomText>
             <TextInput
+              value={userCredentials.email}
+              onChangeText={(text) => setUserCredentials({ ...userCredentials, email: text })}
               style={styles.TextInput}
               placeholder='Enter your email address'
             />
             <CustomText variant='small' style={styles.label}>Password</CustomText>
-            <View >
+            <View>
               <TextInput
+                value={userCredentials.password}
+                onChangeText={(text) => setUserCredentials({ ...userCredentials, password: text })}
                 style={styles.TextInputPassword}
                 placeholder='Enter password'
                 secureTextEntry={secure}
-              /> 
-              <Icon name={secure ? 'eye-off' : 'eye'} size={20} color="#000" style={styles.icon} onPress={toggleSecureText}/>
+              />
+              <Icon
+                name={secure ? 'eye-off' : 'eye'}
+                size={20}
+                color="#000"
+                style={styles.icon}
+                onPress={toggleSecureText}
+              />
             </View>
-            <TouchableOpacity style={styles.button} activeOpacity={0.8}
-              onPress={() => navigation.navigate('EmailLoginScreen')}>
+            <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={handleLogin}>
               <CustomText variant='Body_text' style={styles.EmailText}>Login</CustomText>
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.8} onPress={handleBackPress} >
+              <CustomText variant='small' style={styles.loginPhone}>Login with phone number</CustomText>
             </TouchableOpacity>
           </View>
         </View>
@@ -131,7 +173,7 @@ const styles = StyleSheet.create({
     color: Colors.Regular,
     paddingVertical: 4,
   },
-  EmailText:{
+  EmailText: {
     color: Colors.Regular,
   },
   button: {
@@ -142,8 +184,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 32,
     paddingVertical: 13,
-    marginTop: 10,
+    marginTop: 15,
   },
+  loginPhone:{ 
+    justifyContent:'center',
+    paddingTop:5
+  }
 });
 
 export default EmailLoginScreen;
