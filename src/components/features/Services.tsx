@@ -12,7 +12,7 @@ import {Colors} from '../../constants/Colors';
 import Data from '../../utils/Data';
 
 const Services = () => {
-  const renderItem = ({item}) => (
+  const renderItem = ({item}:any) => (
     <TouchableOpacity style={styles.itemContainer} activeOpacity={0.8}>
       <Image source={item.image} />
       <CustomText style={styles.itemText}>{item.title}</CustomText>

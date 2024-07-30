@@ -1,12 +1,12 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from '../screens/dashboard/HomeScreen';
 import ProfileScreen from '../screens/dashboard/ProfileScreen';
 import JobScreen from '../screens/dashboard/JobScreen';
 import { StyleSheet, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Octicons';
 import CustomText from '../components/global/CustomText';
 import { Colors } from '../constants/Colors';
+import { HomeStack } from './Navigation';
 
 const Tab = createBottomTabNavigator();
 
@@ -28,8 +28,8 @@ function BottomTabs() {
         },
       }}>
       <Tab.Screen 
-        name="Home" 
-        component={HomeScreen} 
+        name="HomeTab" 
+        component={HomeStack} 
         options={{
           tabBarIcon: ({ focused }) => (
             <View style={[styles.yellowBgMenu, { backgroundColor: focused ? Colors.theme : Colors.frozen }]}>

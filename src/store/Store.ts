@@ -1,21 +1,19 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 interface AuthState {
   token: string | null;
-  setToken: (token: string) => Promise<void>;
+  setToken: (token: { access_token: string }) => Promise<void>;
   removeToken: () => Promise<void>;
   checkAuth: () => Promise<void>;
 }
 
-
 const useAuthStore = create<AuthState>((set) => ({
   token: null,
-  setToken: async (token: string) => {
+  setToken: async (token: { access_token: string }) => {
     try {
-      await AsyncStorage.setItem('authToken', JSON.stringify(token));
-      set({ token });
+      await AsyncStorage.setItem('authToken', JSON.stringify(token.access_token));
+      set({ token: token.access_token });
     } catch (error) {
       console.error('Failed to save token', error);
     }
@@ -32,9 +30,9 @@ const useAuthStore = create<AuthState>((set) => ({
     try {
       const token = await AsyncStorage.getItem('authToken');
       if (token) {
-        set({ token });
+        set({ token: JSON.parse(token) });
       } else {
-        set({ token: null }); // Explicitly set token to null if not found
+        set({ token: null });
       }
     } catch (error) {
       console.error('Failed to load token', error);

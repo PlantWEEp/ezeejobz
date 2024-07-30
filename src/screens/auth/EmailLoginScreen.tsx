@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, StatusBar, StyleSheet, Image, TouchableOpacity, TextInput, ScrollView } from 'react-native';
+import {
+  View,
+  StatusBar,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  TextInput,
+  ScrollView,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../../constants/Colors';
 import { useNavigation } from '@react-navigation/native';
@@ -12,21 +20,32 @@ import CustomText from '../../components/global/CustomText';
 import axios from 'axios';
 import { BASE_URL } from '../../utils/config';
 import useAuthStore from '../../store/Store';
-//import * as Yup from 'yup';
+import { Formik, FormikProps } from 'formik';
+import * as Yup from 'yup';
+import { ActivityIndicator } from 'react-native';
+
+const loginSchema = Yup.object().shape({
+  email: Yup.string().email('Invalid email').required('Required'),
+  password: Yup.string().min(6, 'Too short').required('Required'),
+});
 
 interface Credentials {
-  email: string
-  password: string
-} 
+  email: string;
+  password: string;
+}
+interface UserToken {
+  access_token: string;
+}
+interface LoginFormValues {
+  email: string;
+  password: string;
+}
 
 const EmailLoginScreen: React.FC = () => {
   const navigation = useNavigation();
-
-  const [secure, setSecure] = useState(true)
-  const [userCredentials, setUserCredentials] = useState<Credentials>({
-    email: '',
-    password: ''
-  })
+  const [secure, setSecure] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleBackPress = () => {
     navigation.goBack();
@@ -35,70 +54,132 @@ const EmailLoginScreen: React.FC = () => {
   const toggleSecureText = () => {
     setSecure(!secure);
   };
+  const setToken = useAuthStore(state => state.setToken);
 
-  const setToken = useAuthStore((state) => state.setToken);
-  const handleLogin = async () => {
+  const handleLogin = async (values: LoginFormValues) => {
+    setIsLoading(true);
     try {
-      const response = await axios.post(`${BASE_URL}/api/auth/login`, userCredentials)
+      const response = await axios.post(`${BASE_URL}/api/auth/login`, values);
+
       if (response.status === 200) {
-        console.log('Login successful:', response.data);
-        const userToken = response.data
-        setToken(userToken)
-        navigation.navigate('Root', { screen: 'Home', initial: false });
-      } else {
-        console.log('Unexpected response:', response);
+        const { access_token } = response.data.data;
+        console.warn('Login successful:', access_token);
+        const userToken = { access_token };
+        console.log('1 userToken', userToken);
+        console.warn('2 userToken', userToken);
+        await setToken(userToken);
+        navigation.navigate('Main');
       }
-    } catch (error) {
-      console.log('Unexpected response error:', error);
+    } catch (error: any) {
+      setErrorMessage(error.response.data.message);
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <SafeAreaView style={styles.EmailLoginScreen}>
       <StatusBar backgroundColor={Colors.theme} translucent={true} />
-      <View style={styles.container}>
-        <TouchableOpacity onPress={handleBackPress} style={styles.backButton} activeOpacity={0.8}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <TouchableOpacity
+          onPress={handleBackPress}
+          style={styles.backButton}
+          activeOpacity={0.8}>
           <Icon name="chevron-back" size={24} color="#000" />
         </TouchableOpacity>
         <View style={styles.Welcome}>
-          <CustomText variant='h2'>Welcome back!</CustomText>
-          <CustomText variant='small_X' style={styles.subtile}>efficitur non finibus eu, convallis iaculis ex.efficitur non finibus eu, convallis iaculis ex. efficitur non finibus eu, convallis iaculis ex.</CustomText>
+          <CustomText variant="h2">Welcome back!</CustomText>
+          <CustomText variant="small_X" style={styles.subtile}>
+            efficitur non finibus eu, convallis iaculis ex.efficitur non finibus
+            eu, convallis iaculis ex. efficitur non finibus eu, convallis
+            iaculis ex.
+          </CustomText>
         </View>
         <View style={styles.loginForm}>
-          <View>
-            <CustomText variant='small' style={styles.label}>Email address</CustomText>
-            <TextInput
-              value={userCredentials.email}
-              onChangeText={(text) => setUserCredentials({ ...userCredentials, email: text })}
-              style={styles.TextInput}
-              placeholder='Enter your email address'
-            />
-            <CustomText variant='small' style={styles.label}>Password</CustomText>
-            <View>
-              <TextInput
-                value={userCredentials.password}
-                onChangeText={(text) => setUserCredentials({ ...userCredentials, password: text })}
-                style={styles.TextInputPassword}
-                placeholder='Enter password'
-                secureTextEntry={secure}
-              />
-              <Icon
-                name={secure ? 'eye-off' : 'eye'}
-                size={20}
-                color="#000"
-                style={styles.icon}
-                onPress={toggleSecureText}
-              />
-            </View>
-            <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={handleLogin}>
-              <CustomText variant='Body_text' style={styles.EmailText}>Login</CustomText>
-            </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.8} onPress={handleBackPress} >
-              <CustomText variant='small' style={styles.loginPhone}>Login with phone number</CustomText>
-            </TouchableOpacity>
-          </View>
+          <Formik
+            initialValues={{ email: '', password: '' }}
+            validationSchema={loginSchema}
+            onSubmit={handleLogin}>
+            {({
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              values,
+              errors,
+              touched,
+            }: FormikProps<LoginFormValues>) => (
+              <>
+                <CustomText variant="small" style={styles.label}>
+                  Email address
+                </CustomText>
+                <TextInput
+                  value={values.email}
+                  onChangeText={handleChange('email')}
+                  onBlur={handleBlur('email')}
+                  style={styles.TextInput}
+                  placeholder="Enter your email address"
+                />
+                {touched.email && errors.email && (
+                  <CustomText variant="small" style={styles.errorText}>
+                    {errors.email}
+                  </CustomText>
+                )}
+
+                {errorMessage && (
+                  <CustomText variant="small" style={styles.errorMessage}>
+                    {errorMessage}
+                  </CustomText>
+                )}
+
+                <CustomText variant="small" style={styles.label}>
+                  Password
+                </CustomText>
+                <View>
+                  <TextInput
+                    value={values.password}
+                    onChangeText={handleChange('password')}
+                    onBlur={handleBlur('password')}
+                    style={styles.TextInputPassword}
+                    placeholder="Enter password"
+                    secureTextEntry={secure}
+                  />
+                  <Icon
+                    name={secure ? 'eye-off' : 'eye'}
+                    size={20}
+                    color="#000"
+                    style={styles.icon}
+                    onPress={toggleSecureText}
+                  />
+                </View>
+                {touched.password && errors.password && (
+                  <CustomText style={styles.errorText} variant="small">
+                    {errors.password}
+                  </CustomText>
+                )}
+                <TouchableOpacity
+                  style={styles.button}
+                  activeOpacity={0.8}
+                  onPress={handleSubmit}>
+                  {isLoading ? (
+                    <ActivityIndicator size="small" color={Colors.bg_white} />
+                  ) : (
+                    <CustomText variant="Body_text" style={styles.buttonText}>
+                      Login
+                    </CustomText>
+                  )}
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => navigation.navigate('PhoneLogin')}>
+                  <CustomText variant="small" style={styles.loginPhone}>
+                    Login with phone number
+                  </CustomText>
+                </TouchableOpacity>
+              </>
+            )}
+          </Formik>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -124,13 +205,13 @@ const styles = StyleSheet.create({
   },
   Welcome: {
     marginTop: 20,
-    color: Colors.Regular
+    color: Colors.Regular,
   },
   subtile: {
     paddingTop: 6,
     lineHeight: 12,
-    textAlign: "left",
-    color: Colors.Regular
+    textAlign: 'left',
+    color: Colors.Regular,
   },
   loginForm: {
     paddingTop: 30,
@@ -146,7 +227,7 @@ const styles = StyleSheet.create({
   TextInput: {
     borderRadius: 4,
     backgroundColor: Colors.bg_white,
-    borderStyle: "solid",
+    borderStyle: 'solid',
     borderColor: Colors.grey,
     borderWidth: 1,
     height: 40,
@@ -156,13 +237,13 @@ const styles = StyleSheet.create({
   TextInputPassword: {
     borderRadius: 4,
     backgroundColor: Colors.bg_white,
-    borderStyle: "solid",
+    borderStyle: 'solid',
     borderColor: Colors.grey,
     borderWidth: 1,
     height: 40,
     paddingHorizontal: 16,
     paddingVertical: 10,
-    position: 'relative'
+    position: 'relative',
   },
   icon: {
     position: 'absolute',
@@ -186,10 +267,21 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     marginTop: 15,
   },
-  loginPhone:{ 
-    justifyContent:'center',
-    paddingTop:5
-  }
+  loginPhone: {
+    justifyContent: 'center',
+    paddingTop: 5,
+  },
+  errorText: {
+    color: Colors.danger,
+  },
+  buttonText: {
+    color: Colors.Regular,
+  },
+  errorMessage: {
+    color: Colors.danger,
+    paddingTop: 3,
+    marginBottom: -2,
+  },
 });
 
 export default EmailLoginScreen;

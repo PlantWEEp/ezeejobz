@@ -15,7 +15,6 @@ import { Colors } from '../../constants/Colors';
 import { heightPercentageToDP, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import CustomText from '../../components/global/CustomText';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Services from '../../components/features/Services';
 
 const avatar = require('../../assets/image/avatar.png') 
 
@@ -66,7 +65,7 @@ export default function HomeScreen() {
               </CustomText>
           </View>
           <View style={{marginTop:20}}> 
-          <Services/> 
+          
           </View>
         </View>
       </ScrollView>

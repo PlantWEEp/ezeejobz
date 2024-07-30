@@ -5,8 +5,8 @@
  * @format
  */
 
-import React from 'react';
-import Navigation from './src/navigation/Navigation';
+import React from 'react'; 
+import { Navigation } from './src/navigation/Navigation';
 
 const App=()=>{
 return(
