@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -10,22 +10,54 @@ import {
   TextInput,
   TouchableOpacity,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { Colors } from '../../constants/Colors';
-import { FONTS } from '../../constants/Fonts';
+import {Colors} from '../../constants/Colors';
+import {FONTS} from '../../constants/Fonts';
 import CustomText from '../../components/global/CustomText';
+import axios from 'axios';
+import {BASE_URL} from '../../utils/config';
+import {Formik, FormikProps} from 'formik';
+import * as Yup from 'yup';
 
+interface LoginFormValues {
+  phone: string;
+}
+const loginSchema = Yup.object().shape({
+  phone: Yup.string().min(10, 'Too short').required('Required'),
+});
 const backgroundImage = require('../../assets/image/themebg.png');
 const job = require('../../assets/image/job-posting.png');
 const flag = require('../../assets/image/india.png');
 
-export default function LoginScreen({ navigation}: any ) {
+export default function LoginScreen({navigation}: any) {
   const [isFocused, setIsFocused] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>();
+
+  const handleLogin = async (values: LoginFormValues) => {
+    setIsLoading(true);
+
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/api/auth/send-login-otp`,
+        values,
+      );
+      if (response.status === 200) {
+        console.log('sucess');
+        navigation.navigate('OtpScreen', {data: response.data});
+      }
+    } catch (error: any) {
+      console.log('errrr', error);
+      setErrorMessage(error.response.data.message);
+      setIsLoading(false);
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={Colors.theme} translucent={true} />
@@ -33,13 +65,10 @@ export default function LoginScreen({ navigation}: any ) {
         <ImageBackground source={backgroundImage} style={styles.background} />
         <View style={styles.containerSection}>
           <View style={styles.wrapperImage}>
-            <Image
-              resizeMode="cover"
-              source={job}
-            />
+            <Image resizeMode="cover" source={job} />
           </View>
           <Text style={styles.quickEasy}>Quick & Easy Job Posting</Text>
-          <CustomText variant='small'  style={styles.getQualityApplies}>
+          <CustomText variant="small" style={styles.getQualityApplies}>
             Get Quality Applies. No Middlemen. No commission, get your job done
             and pay them straight.
           </CustomText>
@@ -47,43 +76,69 @@ export default function LoginScreen({ navigation}: any ) {
             <Text style={styles.enterYourMobile}>Enter your mobile number</Text>
           </View>
           <View style={styles.groupParent}>
-            <View style={styles.groupContainer}>
-              <View style={styles.containerFlag}>
-                <Image source={flag}  />
-              </View>
-              <View>
-                <TextInput
-                  style={[
-                    styles.input,
-                    {
-                      borderColor: isFocused ? Colors.theme : Colors.grey,
-                    },
-                  ]}
-                  onFocus={() => setIsFocused(true)}
-                  onBlur={() => setIsFocused(false)}
-                  placeholder="Enter your phone number"
-                  keyboardType="numeric"
-                />
-              </View>
-            </View>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => navigation.navigate('otpScreen')}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.buttonText}>Continue</Text>
-            </TouchableOpacity> 
+            <Formik
+              initialValues={{phone: ''}}
+              validationSchema={loginSchema}
+              onSubmit={handleLogin}>
+              {({
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                values,
+              }: FormikProps<LoginFormValues>) => (
+                <>
+                  <View style={styles.InputContainer}>
+                    <View style={styles.containerFlag}>
+                      <Image source={flag} />
+                    </View>
+                    <View>
+                      <TextInput
+                        onChangeText={handleChange('phone')}
+                        onBlur={handleBlur('phone')}
+                        value={values.phone}
+                        style={[
+                          styles.input,
+                          {
+                            borderColor: isFocused ? Colors.theme : Colors.grey,
+                          },
+                        ]}
+                        onFocus={() => setIsFocused(true)}
+                        placeholder="Enter your phone number"
+                        keyboardType="numeric"
+                      />
+                    </View>
+                  </View>
+                  {errorMessage && (
+                    <CustomText variant="small" style={styles.errorMessage}>
+                      {errorMessage}
+                    </CustomText>
+                  )}
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={handleSubmit}
+                    activeOpacity={0.8}>
+                    {isLoading ? (
+                      <ActivityIndicator size="small" color={Colors.bg_white} />
+                    ) : (
+                      <Text style={styles.buttonText}>Continue</Text>
+                    )}
+                  </TouchableOpacity>
+                </>
+              )}
+            </Formik>
             <View style={styles.ContainerlineOr}>
               <View style={styles.line1} />
               <Text style={styles.or}>OR</Text>
               <View style={styles.line2} />
             </View>
             <View style={styles.buttonWapper}>
-              <TouchableOpacity style={styles.buttonEmail} activeOpacity={0.8}
+              <TouchableOpacity
+                style={styles.buttonEmail}
+                activeOpacity={0.8}
                 onPress={() => navigation.navigate('EmailLoginScreen')}>
                 <Text>Login with email</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.buttonEmail} activeOpacity={0.8}>
+              <TouchableOpacity style={styles.buttonEmail} onPress={()=> navigation.navigate('SignUp')} activeOpacity={0.8}>
                 <Text>Sign Up</Text>
               </TouchableOpacity>
             </View>
@@ -151,12 +206,6 @@ const styles = StyleSheet.create({
   },
   groupParent: {
     marginTop: 5,
-  },
-  groupContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    gap: 7,
   },
   containerFlag: {
     backgroundColor: Colors.frozen,
@@ -230,10 +279,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     paddingVertical: 13,
     width: '49%',
-    color: Colors.Regular
+    color: Colors.Regular,
   },
   buttonWapper: {
     flexDirection: 'row',
     gap: 10,
-  }
+  },
+  errorMessage: {
+    color: Colors.danger,
+    paddingTop: 3,
+    marginBottom: -2,
+  },
+  InputContainer: {
+    flexDirection: 'row',
+    gap: 8,
+    alignItems: 'center',
+  },
 });

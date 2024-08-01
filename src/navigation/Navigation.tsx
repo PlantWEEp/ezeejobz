@@ -9,6 +9,7 @@ import HomeScreen from '../screens/dashboard/HomeScreen';
 import JobScreen from '../screens/dashboard/JobScreen';
 import ProfileScreen from '../screens/dashboard/ProfileScreen';
 import BottomTabs from './BottomTab';
+import SignUp from '../screens/auth/SignUp';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +19,7 @@ function AuthStack() {
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="EmailLoginScreen" component={EmailLoginScreen} />
       <Stack.Screen name="OtpScreen" component={OtpScreen} /> 
+      <Stack.Screen name="SignUp" component={SignUp} /> 
     </Stack.Navigator>
   );
 }
@@ -52,9 +54,9 @@ function Navigation() {
     <NavigationContainer>
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {isAuthenticated ? (
-        <Stack.Screen name="Main" component={BottomTabs} />
-      ) : (
         <Stack.Screen name="Auth" component={AuthStack} />
+      ) : (
+        <Stack.Screen name="Main" component={BottomTabs} />
       )}
     </Stack.Navigator>
   </NavigationContainer>

@@ -24,7 +24,8 @@ function BottomTabs() {
           ...styles.shadow, 
           borderRadius: 999,
           height:60,
-          paddingRight:10
+          paddingRight:10, 
+          backgroundColor:Colors.frozen
         },
       }}>
       <Tab.Screen 

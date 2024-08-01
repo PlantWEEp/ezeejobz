@@ -23,7 +23,7 @@ import useAuthStore from '../../store/Store';
 import {Formik, FormikProps} from 'formik';
 import * as Yup from 'yup';
 import {ActivityIndicator} from 'react-native';
-import { GestureResponderEvent } from 'react-native';
+import {GestureResponderEvent} from 'react-native';
 
 const loginSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
@@ -35,7 +35,7 @@ interface LoginFormValues {
   password: string;
 }
 
-const EmailLoginScreen: React.FC = () => {
+const SignUp: React.FC = () => {
   const navigation = useNavigation();
   const [secure, setSecure] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -50,7 +50,10 @@ const EmailLoginScreen: React.FC = () => {
   };
   const setToken = useAuthStore(state => state.setToken);
 
-  const handleLogin = async (values: LoginFormValues,event: GestureResponderEvent) => {
+  const handleLogin = async (
+    values: LoginFormValues,
+    event: GestureResponderEvent,
+  ) => {
     setIsLoading(true);
     event.preventDefault();
     try {
@@ -69,9 +72,11 @@ const EmailLoginScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.EmailLoginScreen}>
+    <SafeAreaView style={styles.SignUp}>
       <StatusBar backgroundColor={Colors.theme} translucent={true} />
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps='handled'>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled">
         <TouchableOpacity
           onPress={handleBackPress}
           style={styles.backButton}
@@ -79,7 +84,7 @@ const EmailLoginScreen: React.FC = () => {
           <Icon name="chevron-back" size={24} color="#000" />
         </TouchableOpacity>
         <View style={styles.Welcome}>
-          <CustomText variant="h2">Welcome back!</CustomText>
+          <CustomText variant="h2">Create Account</CustomText>
           <CustomText variant="small_X" style={styles.subtile}>
             efficitur non finibus eu, convallis iaculis ex.efficitur non finibus
             eu, convallis iaculis ex. efficitur non finibus eu, convallis
@@ -100,6 +105,41 @@ const EmailLoginScreen: React.FC = () => {
               touched,
             }: FormikProps<LoginFormValues>) => (
               <>
+                {/* Full Name */}
+                <CustomText variant="small" style={styles.label}>
+                  Full Name *
+                </CustomText>
+                <TextInput
+                  value={values.email}
+                  onChangeText={handleChange('name')}
+                  onBlur={handleBlur('name')}
+                  style={styles.TextInput}
+                  placeholder="Enter your full name"
+                />
+                {touched.email && errors.email && (
+                  <CustomText variant="small" style={styles.errorText}>
+                    {errors.email}
+                  </CustomText>
+                )}
+
+                {/* Phone number  */}
+                <CustomText variant="small" style={styles.label}>
+                Phone number *
+                </CustomText>
+                <TextInput
+                  value={values.email}
+                  onChangeText={handleChange('phone')}
+                  onBlur={handleBlur('phone')}
+                  style={styles.TextInput}
+                  placeholder="Enter your phone number"
+                />
+                {touched.email && errors.email && (
+                  <CustomText variant="small" style={styles.errorText}>
+                    {errors.email}
+                  </CustomText>
+                )}
+
+                {/* Email address */}
                 <CustomText variant="small" style={styles.label}>
                   Email address
                 </CustomText>
@@ -116,14 +156,9 @@ const EmailLoginScreen: React.FC = () => {
                   </CustomText>
                 )}
 
-                {errorMessage && (
-                  <CustomText variant="small" style={styles.errorMessage}>
-                    {errorMessage}
-                  </CustomText>
-                )}
-
+                {/* Password */}
                 <CustomText variant="small" style={styles.label}>
-                  Password
+                  Create a password
                 </CustomText>
                 <View>
                   <TextInput
@@ -131,7 +166,33 @@ const EmailLoginScreen: React.FC = () => {
                     onChangeText={handleChange('password')}
                     onBlur={handleBlur('password')}
                     style={styles.TextInputPassword}
-                    placeholder="Enter password"
+                    placeholder="Create a password"
+                    secureTextEntry={secure}
+                  />
+                  <Icon
+                    name={secure ? 'eye-off' : 'eye'}
+                    size={20}
+                    color="#000"
+                    style={styles.icon}
+                    onPress={toggleSecureText}
+                  />
+                </View>
+                {touched.password && errors.password && (
+                  <CustomText style={styles.errorText} variant="small">
+                    {errors.password}
+                  </CustomText>
+                )}
+                {/*Confirm Password */}
+                <CustomText variant="small" style={styles.label}>
+                Confirm password
+                </CustomText>
+                <View>
+                  <TextInput
+                    value={values.password}
+                    onChangeText={handleChange('password')}
+                    onBlur={handleBlur('password')}
+                    style={styles.TextInputPassword}
+                    placeholder="Confirm password"
                     secureTextEntry={secure}
                   />
                   <Icon
@@ -155,17 +216,10 @@ const EmailLoginScreen: React.FC = () => {
                     <ActivityIndicator size="small" color={Colors.bg_white} />
                   ) : (
                     <CustomText variant="Body_text" style={styles.buttonText}>
-                      Login
+                      Sign Up
                     </CustomText>
                   )}
                 </TouchableOpacity> 
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={() => navigation.navigate('Login')}>
-                  <CustomText variant="small" style={styles.loginPhone}>
-                    Login with phone number
-                  </CustomText>
-                </TouchableOpacity>
               </>
             )}
           </Formik>
@@ -176,15 +230,15 @@ const EmailLoginScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  EmailLoginScreen: {
-    backgroundColor: Colors.theme, 
-    flex:1
+  SignUp: {
+    backgroundColor: Colors.theme,
+   flex:1
   },
   container: {
     paddingHorizontal: 28,
     paddingTop: 10,
     justifyContent: 'flex-start',
-    flex: 1,
+    flexGrow: 1, 
   },
   backButton: {
     width: 50,
@@ -276,4 +330,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EmailLoginScreen;
+export default SignUp;
