@@ -2,19 +2,22 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  FlatList, 
+  FlatList,
   Image,
 } from 'react-native';
 import React from 'react';
 import CustomText from '../global/CustomText';
 import {Colors} from '../../constants/Colors';
 import Data from '../../utils/Data';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const Services = () => {
   const navigation = useNavigation();
-  const renderItem = ({item}:any) => (
-    <TouchableOpacity style={styles.itemContainer} onPress={() => navigation.navigate('OtpScreen')} activeOpacity={0.8}>
+  const renderItem = ({item}: any) => (
+    <TouchableOpacity
+      style={styles.itemContainer}
+      onPress={() => navigation.navigate('Addjob')}
+      activeOpacity={0.8}>
       <Image source={item.image} />
       <CustomText style={styles.itemText}>{item.title}</CustomText>
     </TouchableOpacity>
@@ -36,10 +39,10 @@ const Services = () => {
         style={styles.itemListedd}
         data={Data}
         keyExtractor={item => item.id}
-        renderItem={renderItem} 
-        numColumns={3} 
-        columnWrapperStyle={styles.columnWrapper} 
-        contentContainerStyle={styles.itemListedd}  
+        renderItem={renderItem}
+        numColumns={3}
+        columnWrapperStyle={styles.columnWrapper}
+        contentContainerStyle={styles.itemListedd}
       />
     </View>
   );
@@ -71,13 +74,13 @@ const styles = StyleSheet.create({
     color: Colors.Regular,
   },
   itemContainer: {
-    flex: 1, 
+    flex: 1,
     paddingVertical: 10,
     paddingHorizontal: 6,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: Colors.frozen,
-    margin: 4, 
+    margin: 4,
     borderRadius: 4,
   },
   itemImage: {
@@ -89,7 +92,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   columnWrapper: {
-    justifyContent: 'space-between', 
+    justifyContent: 'space-between',
   },
 });
 

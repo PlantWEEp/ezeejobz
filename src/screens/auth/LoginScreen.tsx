@@ -50,7 +50,7 @@ export default function LoginScreen({navigation}: any) {
       );
       if (response.status === 200) {
         console.log('sucess');
-        navigation.navigate('OtpScreen', {data: response.data});
+        await navigation.navigate('OtpScreen', {data: response.data});
       }
     } catch (error: any) {
       console.log('errrr', error);

@@ -61,7 +61,7 @@ import {
         computedFontSize = RFValue(fontSize || 14);
         break;
       case 'small_X':
-        computedFontSize = RFValue(fontSize || 8);
+        computedFontSize = RFValue(fontSize || 10);
         break;
       default:
         computedFontSize = RFValue(fontSize || 12);
@@ -75,7 +75,7 @@ import {
           style={[
             styles.text,
             {
-              color: Colors.text,
+              color: Colors.Regular,
               fontSize: computedFontSize,
               fontFamily: fontFamily ? FONTS[fontFamily] : undefined,
               fontWeight: fontWeight,

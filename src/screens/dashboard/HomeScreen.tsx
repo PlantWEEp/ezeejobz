@@ -2,49 +2,25 @@ import {
   View,
   StatusBar,
   TouchableOpacity,
-  StyleSheet,
-  Image,
+  StyleSheet, 
   FlatList,
 } from 'react-native';
 import React from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context'; 
 import Icon from 'react-native-vector-icons/Octicons';
 import {Colors} from '../../constants/Colors';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import CustomText from '../../components/global/CustomText';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Services from '../../components/features/Services';
+import TopHeader from '../../components/features/TopHeader';
 
-const avatar = require('../../assets/image/avatar.png');
 
 const HomeScreen = () => {
   const renderHeader = () => (
     <View>
       <StatusBar backgroundColor={Colors.theme} translucent={true} />
       <View style={styles.yellowBg}>
-        <View style={styles.wapperHeader}>
-          <TouchableOpacity style={styles.backButton} activeOpacity={0.8}>
-            <Icon name="location" size={26} color="#000" />
-            <View>
-              <CustomText variant="small_X" style={styles.Location}>
-                Location
-              </CustomText>
-              <CustomText variant="small" style={styles.Location}>
-                Thiruvananthapuram
-              </CustomText>
-            </View>
-          </TouchableOpacity>
-          <View style={styles.rightSection}>
-            <TouchableOpacity activeOpacity={0.8}>
-              <FontAwesome name="bell-o" size={26} color="#000" />
-            </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.8}>
-              <View>
-                <Image source={avatar} />
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
+      <TopHeader/>
         <View>
           <TouchableOpacity activeOpacity={0.8} style={styles.searchSection}>
             <CustomText variant="small">Search here</CustomText>
@@ -78,33 +54,17 @@ const HomeScreen = () => {
         )}
         keyExtractor={item => item.key}
       />
+      <View style={styles.FooterSection} />
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  wapperHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
   container: {
     flex: 1,
     paddingHorizontal: 28,
     paddingTop: 10,
     position: 'relative',
-  },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  Location: {
-    color: Colors.Regular,
-  },
-  rightSection: {
-    flexDirection: 'row',
-    gap: 10,
   },
   searchSection: {
     marginTop: 10,
@@ -142,6 +102,10 @@ const styles = StyleSheet.create({
     color: Colors.Regular,
     fontWeight: '500',
   },
+  FooterSection:{
+   height: 80,
+   backgroundColor: '#fff0'
+  }
 });
 
 export default HomeScreen;

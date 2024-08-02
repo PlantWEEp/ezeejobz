@@ -7,6 +7,5 @@ export enum Colors  {
   fbColor = '#1877F2',
   grey = '#C5C7CA',
   green = '#27D045', 
-  danger = '#D02727',
-  text = "text", 
+  danger = '#D02727', 
 };
